@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI効率化Lab - 生成AIで仕事を変える</title>
+    <style>
+        /* リセットとベース */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ヘッダー */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav a:hover {
+            color: #667eea;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ヒーローセクション */
+        .hero {
+            margin-top: 80px;
+            padding: 40px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .campaign-banner {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            line-height: 1.1;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .hero-visual {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .visual-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .visual-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .visual-card .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .visual-card h3 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        /* 課題提起セクション */
+        .problems {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .problems h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .problem-item {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .problem-item .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .problem-item h3 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        /* サービス詳細 */
+        .services {
+            padding: 80px 0;
+        }
+
+        .services h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .service-card p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .service-card ul {
+            list-style: none;
+        }
+
+        .service-card li {
+            padding: 8px 0;
+            color: #666;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .service-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        /* 講師実績 */
+        .experience {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .experience h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .experience-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .experience-item {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .experience-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .experience-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .experience-item h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .experience-description {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .experience-highlight {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .experience-detail {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+
+        .achievements {
+            list-style: none;
+            text-align: left;
+        }
+
+        .achievements li {
+            padding: 8px 0;
+            color: #666;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .achievements li:before {
+            content: "🏆";
+            position: absolute;
+            left: 0;
+        }
+
+        .specialties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .specialty {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 4段階研修プログラム */
+        .training-program {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .training-program h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .program-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .program-phase {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .program-phase:hover {
+            transform: translateY(-5px);
+        }
+
+        .phase-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .phase-number {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .phase-header h3 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .phase-content {
+            padding: 30px 25px;
+        }
+
+        .phase-content h4 {
+            font-size: 16px;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .phase-content ul {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .phase-content li {
+            padding: 8px 0;
+            color: #666;
+            position: relative;
+            padding-left: 20px;
+            line-height: 1.5;
+        }
+
+        .phase-content li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .phase-benefit {
+            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* 研修提供事例 */
+        .training-cases {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .training-cases h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .training-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .training-case {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .training-case:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .case-header h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 0;
+        }
+
+        .participants {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .training-case p {
+            margin-bottom: 15px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .training-case strong {
+            color: #333;
+        }
+
+        .result {
+            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        /* 導入事例 */
+        .cases {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .cases h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+        }
+
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .case-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .case-stats {
+            margin-bottom: 20px;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            display: block;
+            color: #feca57;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .case-item h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .case-item p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* プロセス */
+        .process {
+            padding: 80px 0;
+        }
+
+        .process h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 30px;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .step h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .step p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 80px 0;
+        }
+
+        .faq h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .faq-item {
+            margin-bottom: 30px;
+        }
+
+        .faq-item h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .faq-item p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* コンタクト */
+        .contact {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .contact h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .contact p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .contact-benefits {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .benefit {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .contact-form {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* お問い合わせフォーム準備中スタイル */
+        .contact-preparation {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .prep-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .contact-preparation h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .contact-preparation p {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        .contact-info {
+            margin-bottom: 30px;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .contact-icon {
+            font-size: 20px;
+        }
+
+        .email-link {
+            color: #feca57;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .email-link:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .coming-soon {
+            background: rgba(254, 202, 87, 0.2);
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #feca57;
+        }
+
+        .coming-soon span {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        /* フッター */
+        .footer {
+            padding: 40px 0;
+            background: #333;
+            color: white;
+            text-align: center;
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                text-align: center;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .nav {
+                display: none;
+            }
+            
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .faq-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .process-steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .contact-method {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .hero {
+                padding: 30px 0;
+            }
+            
+            .hero h1 {
+                font-size: 28px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+            
+            .process-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <!-- reCAPTCHA v3は削除（使用しないため） -->
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">AI効率化Lab</div>
+            <nav class="nav">
+                <a href="#services">サービス</a>
+                <a href="#experience">講師実績</a>
+                <a href="#cases">導入事例</a>
+                <a href="#contact" class="cta-button">無料相談</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ヒーローセクション -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="campaign-banner">
+                        🎯 初回相談無料キャンペーン実施中
+                    </div>
+                    <h1>生成AIで仕事を変える。<br>周りと差をつける。</h1>
+                    <p>30代ビジネスパーソンのための実践的AI活用レクチャー。<br>効率化ツール作成代行で、あなたの業務を劇的に改善します。</p>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn-primary">無料相談を始める</a>
+                        <a href="#services" class="btn-secondary">サービス詳細</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 課題提起セクション -->
+    <section class="problems">
+        <div class="container">
+            <h2>こんな悩みありませんか？</h2>
+            <div class="problems-grid">
+                <div class="problem-item">
+                    <div class="icon">😰</div>
+                    <h3>AIを使いたいけど何から始めればいいか分からない</h3>
+                </div>
+                <div class="problem-item">
+                    <div class="icon">⏰</div>
+                    <h3>同じ作業の繰り返しで時間を浪費している</h3>
+                </div>
+                <div class="problem-item">
+                    <div class="icon">📉</div>
+                    <h3>周りの同僚に効率で差をつけられている</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- サービス詳細 -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2>私たちのソリューション</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🎓</div>
+                    <h3>個別AIレクチャー</h3>
+                    <p>あなたの業務に特化したAI活用方法を個別指導。初歩的な生成AIの使い方からClaude Codeを活用した業務自動化まで、実践的な使い方をマスターできます。</p>
+                    <ul>
+                        <li>AI会話の基本ルール指導</li>
+                        <li>具体的指示・役割設定技術</li>
+                        <li>AIを活用したアプリ作成</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🛠️</div>
+                    <h3>カスタムツール作成</h3>
+                    <p>あなたの業務に特化した効率化ツールを作成代行。自動化やAI連携で、面倒な作業から解放されます。</p>
+                    <ul>
+                        <li>業務自動化ツール開発</li>
+                        <li>AIとの連携システム</li>
+                        <li>レポート自動生成</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📞</div>
+                    <h3>継続サポート</h3>
+                    <p>導入後もしっかりサポート。定期的な効果検証と改善提案で、常に最適化された業務環境を維持します。</p>
+                    <ul>
+                        <li>月次効果検証</li>
+                        <li>トラブル対応</li>
+                        <li>新機能提案</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 講師実績 -->
+    <section id="experience" class="experience">
+        <div class="container">
+            <h2>講師実績</h2>
+            <div class="experience-grid">
+                <div class="experience-item">
+                    <div class="experience-icon">🎯</div>
+                    <h3>実績</h3>
+                    <div class="experience-description">
+                        <p class="experience-highlight">多様な業界での豊富な研修経験</p>
+                        <p class="experience-detail">製造業・IT・金融など幅広い業界</p>
+                    </div>
+                    <p>現役SEとして大手企業から中小企業まで、様々な規模の組織で業務効率化を支援</p>
+                </div>
+                <div class="experience-item">
+                    <div class="experience-icon">🏆</div>
+                    <h3>実績</h3>
+                    <ul class="achievements">
+                        <li>オンラインプラットフォーム「ストアカ」での生成AI講師</li>                        
+                        <li>中小企業向けプロンプトエンジニアリング研修</li>
+                        <li>中小企業向け生成AI活用研修</li>
+                    </ul>
+                </div>
+                <div class="experience-item">
+                    <div class="experience-icon">📚</div>
+                    <h3>専門技術・手法</h3>
+                    <div class="specialties">
+                        <span class="specialty">基本操作</span>
+                        <span class="specialty">基本プロンプト設計</span>
+                        <span class="specialty">応用活用</span>
+                        <span class="specialty">トラブル対応</span>
+                        <span class="specialty">最新AIトレンド</span>
+                        <span class="specialty">ツール開発</span>
+                        <span class="specialty">他ツールとの連携</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4段階研修プログラム -->
+    <section class="training-program">
+        <div class="container">
+            <h2>体系的3段階研修プログラム</h2>
+            <div class="program-grid">
+                <div class="program-phase">
+                    <div class="phase-header">
+                        <span class="phase-number">Step 1</span>
+                        <h3>AI基礎知識</h3>
+                    </div>
+                    <div class="phase-content">
+                        <h4>学習内容</h4>
+                        <ul>
+                            <li>AIの基本概念と主要ツール紹介</li>
+                            <li>ChatGPT等の基本操作学習</li>
+                            <li>活用事例の実践形式での体験</li>
+                        </ul>
+                        <div class="phase-benefit">✅ AI活用の基盤構築</div>
+                    </div>
+                </div>
+                <div class="program-phase">
+                    <div class="phase-header">
+                        <span class="phase-number">Step 2</span>
+                        <h3>実践演習</h3>
+                    </div>
+                    <div class="phase-content">
+                        <h4>スキル習得</h4>
+                        <ul>
+                            <li>業務効率化への応用手法</li>
+                            <li>プロンプト作成演習</li>
+                            <li>実業務に近い課題での練習</li>
+                        </ul>
+                        <div class="phase-benefit">✅ 実務スキルの習得</div>
+                    </div>
+                </div>
+                <div class="program-phase">
+                    <div class="phase-header">
+                        <span class="phase-number">Step 3</span>
+                        <h3>自社適用検討</h3>
+                    </div>
+                    <div class="phase-content">
+                        <h4>実装準備</h4>
+                        <ul>
+                            <li>自社業務への適用可能性検討</li>
+                            <li>導入プランの言語化</li>
+                            <li>次ステップの方向性整理</li>
+                        </ul>
+                        <div class="phase-benefit">✅ 自社展開の準備完了</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 研修提供事例 -->
+    <section class="training-cases">
+        <div class="container">
+            <h2>研修提供事例</h2>
+            <div class="training-grid">
+                <div class="training-case">
+                    <div class="case-header">
+                        <h3>福祉系企業 様</h3>
+                        <span class="participants">小規模研修</span>
+                    </div>
+                    <p><strong>テーマ：</strong>Google Workspace導入研修</p>
+                    <p><strong>内容：</strong>Google Workspaceを活用した業務効率化、デジタル化推進による従来業務プロセスの変革</p>
+                    <div class="result">従来行っていた業務プロセスが大幅に効率化され、従業員の業務利便性が向上</div>
+                </div>
+                <div class="training-case">
+                    <div class="case-header">
+                        <h3>Web物販企業 様</h3>
+                        <span class="participants">チーム向け研修</span>
+                    </div>
+                    <p><strong>テーマ：</strong>AI活用による生産性向上研修</p>
+                    <p><strong>内容：</strong>プロンプトエンジニアリング技術、ランディングページ作成効率化、資料作成自動化手法</p>
+                    <div class="result">LP制作・資料作成業務の大幅な時間短縮と品質向上を達成</div>
+                </div>
+                <div class="training-case">
+                    <div class="case-header">
+                        <h3>経理代行業 様</h3>
+                        <span class="participants">チーム向け研修</span>
+                    </div>
+                    <p><strong>テーマ：</strong>経理業界向け生成AI基礎研修</p>
+                    <p><strong>内容：</strong>プロンプトエンジニアリング技術、競合調査・市場分析の効率化、顧客レポート作成自動化手法</p>
+                    <div class="result">生成AIに対する理解促進と実務への積極的な活用体制の構築</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- カスタムツール導入事例 -->
+    <section id="cases" class="cases">
+        <div class="container">
+            <h2>導入事例</h2>
+            <div class="cases-grid">
+                <div class="case-item">
+                    <div class="case-stats">
+                        <span class="stat-number">60%</span>
+                        <span class="stat-label">自動化</span>
+                    </div>
+                    <h3>福祉系企業 部長 K様</h3>
+                    <p>問い合わせ対応の自動化。対応時間が1件当たり60%削減。</p>
+                </div>
+                <div class="case-item">
+                    <div class="case-stats">
+                        <span class="stat-number">75%</span>
+                        <span class="stat-label">作業効率UP</span>
+                    </div>
+                    <h3>Web物販企業 代表 A様</h3>
+                    <p>顧客データ分析と書類作成を自動化。作業時間を4分の1に短縮。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- プロセス -->
+    <section class="process">
+        <div class="container">
+            <h2>導入までの流れ</h2>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>無料相談</h3>
+                    <p>現在の業務課題をヒアリング</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>課題分析</h3>
+                    <p>AI活用ポイントを特定</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>提案書作成</h3>
+                    <p>最適なソリューションを提案</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>レクチャー開始</h3>
+                    <p>実践的なAI活用指導</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <h3>効果検証・継続改善</h3>
+                    <p>導入効果の測定とツール改善</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+        <div class="container">
+            <h2>よくある質問</h2>
+            <div class="faq-grid">
+                <div class="faq-column">
+                    <div class="faq-item">
+                        <h3>AI初心者でも大丈夫ですか？</h3>
+                        <p>はい、初心者の方でも安心してご利用いただけます。基礎から丁寧にレクチャーいたします。</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>どのくらいで効果が実感できますか？</h3>
+                        <p>多くのお客様が1ヶ月以内に業務効率の改善を実感されています。</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>途中でプラン変更は可能ですか？</h3>
+                        <p>はい、いつでもプラン変更が可能です。お気軽にご相談ください。</p>
+                    </div>
+                </div>
+                <div class="faq-column">
+                    <div class="faq-item">
+                        <h3>作成したツールの所有権は？</h3>
+                        <p>お客様専用に作成したツールの所有権は、すべてお客様に帰属します。</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>契約期間はありますか？</h3>
+                        <p>最低契約期間は3ヶ月となっております。その後は月単位での契約が可能です。</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3>他社との違いは何ですか？</h3>
+                        <p>実際の業務に特化したオーダーメイドのレクチャーとツール提供が強みです。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- コンタクト（修正版：問い合わせフォーム準備中メッセージ） -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-text">
+                    <h2>お問い合わせ</h2>
+                    <p>あなたの業務課題をお聞かせください。<br>最適なAI活用方法をご提案いたします。</p>
+                    <div class="contact-benefits">
+                        <div class="benefit">✅ 30分の無料コンサルティング</div>
+                        <div class="benefit">✅ 業務分析レポート無料提供</div>
+                        <div class="benefit">✅ カスタム提案書作成</div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <div class="contact-preparation">
+                        <div class="prep-icon">🚧</div>
+                        <h3>お問い合わせフォーム準備中</h3>
+                        <span>📅 お問い合わせフォームは近日公開予定です</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 AI効率化Lab. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript削除（フォーム処理が不要なため） -->
+</body>
+</html>
