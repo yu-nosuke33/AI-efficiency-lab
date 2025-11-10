@@ -1,0 +1,755 @@
+<!-- ========================================
+     WordPress用アンケートフォーム - 改善版
+     CORS対応とエラーハンドリング強化
+     ======================================== -->
+
+<div id="custom-survey-form">
+  <h2>再生医療申請サポートサービス アンケート</h2>
+  <p>ご協力ありがとうございます。以下の項目にご回答ください。</p>
+
+  <form id="surveyForm">
+
+    <!-- 基本情報 -->
+    <div class="form-section">
+      <h3>基本情報</h3>
+
+      <div class="form-group">
+        <label for="facility">医療機関名 <span class="required">*</span></label>
+        <input type="text" id="facility" name="facility" class="form-input" required>
+      </div>
+
+      <div class="form-group">
+        <label for="position">役職 <span class="required">*</span></label>
+        <input type="text" id="position" name="position" class="form-input" required>
+      </div>
+
+      <div class="form-group">
+        <label for="name">お名前 <span class="required">*</span></label>
+        <input type="text" id="name" name="name" class="form-input" required>
+      </div>
+    </div>
+
+    <!-- 質問①～⑦（要約対象） -->
+    <div class="form-section">
+      <h3>サービスについてのご感想</h3>
+
+      <div class="form-group">
+        <label for="q1">①再生医療を導入されたきっかけを教えてください <span class="required">*</span></label>
+        <textarea id="q1" name="q1" class="form-textarea" rows="4" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="q2">②当社のサポートを受けようと思った理由を教えてください <span class="required">*</span></label>
+        <textarea id="q2" name="q2" class="form-textarea" rows="4" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="q3">③他の業者も検討されましたか？</label>
+        <textarea id="q3" name="q3" class="form-textarea" rows="4"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="q4">④当社に決めた決め手は何でしたか？ <span class="required">*</span></label>
+        <textarea id="q4" name="q4" class="form-textarea" rows="4" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="q5">⑤担当者の対応はいかがでしたか？ <span class="required">*</span></label>
+        <textarea id="q5" name="q5" class="form-textarea" rows="4" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="q6">⑥サービス全体の満足度を教えてください <span class="required">*</span></label>
+        <textarea id="q6" name="q6" class="form-textarea" rows="4" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="q7">⑦他の医療機関様へ推薦するとしたら、どのようにお伝えしますか？ <span class="required">*</span></label>
+        <textarea id="q7" name="q7" class="form-textarea" rows="4" required></textarea>
+      </div>
+    </div>
+
+    <!-- 要約欄と要約ボタン -->
+    <div class="form-section summary-section">
+      <h3>ご感想の要約</h3>
+      <p class="summary-description">上記のご感想を要約した文章が表示されます。内容を確認・編集してください。</p>
+
+      <div class="form-group">
+        <label for="summary">要約文（確認・編集可能） <span class="required">*</span></label>
+        <textarea id="summary" name="summary" class="form-textarea" rows="6" placeholder="「要約する」ボタンを押すと、ここに要約が表示されます" required></textarea>
+      </div>
+
+      <button type="button" id="summarizeBtn" class="btn btn-summarize">要約する</button>
+      <div id="summaryStatus" class="status-message"></div>
+    </div>
+
+    <!-- 質問⑧～⑩ -->
+    <div class="form-section">
+      <h3>その他</h3>
+
+      <div class="form-group">
+        <label for="q8">⑧紹介制度への登録を希望されますか？ <span class="required">*</span></label>
+        <select id="q8" name="q8" class="form-input" required>
+          <option value="">選択してください</option>
+          <option value="希望する">希望する</option>
+          <option value="希望しない">希望しない</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="q9">⑨ご紹介いただける医療機関がありましたら教えてください</label>
+        <textarea id="q9" name="q9" class="form-textarea" rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="q10">⑩今後興味のあるサービスがあれば教えてください</label>
+        <textarea id="q10" name="q10" class="form-textarea" rows="3"></textarea>
+      </div>
+    </div>
+
+    <!-- 送信ボタン -->
+    <div class="form-section">
+      <button type="submit" id="submitBtn" class="btn btn-submit">送信する</button>
+      <div id="submitStatus" class="status-message"></div>
+    </div>
+
+  </form>
+
+  <!-- デバッグ情報（開発時のみ表示） -->
+  <div id="debugInfo" class="debug-info" style="display: none;">
+    <h4>デバッグ情報</h4>
+    <pre id="debugLog"></pre>
+  </div>
+</div>
+
+<style>
+/* ========================================
+   カスタムアンケートフォームのスタイル
+======================================== */
+
+#custom-survey-form {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+#custom-survey-form h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+#custom-survey-form > p {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* セクション */
+.form-section {
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #eee;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+}
+
+.form-section h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #2c5aa0;
+  border-left: 4px solid #2c5aa0;
+  padding-left: 12px;
+}
+
+/* フォームグループ */
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 15px;
+}
+
+.form-group label .required {
+  color: #dc3545;
+  margin-left: 4px;
+}
+
+/* 入力フィールド */
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #2c5aa0;
+  box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* 要約セクション */
+.summary-section {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 6px;
+  border: 2px solid #e9ecef;
+}
+
+.summary-description {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+#summary {
+  background: #ffffff;
+  border: 2px solid #2c5aa0;
+}
+
+/* ボタン共通スタイル */
+.btn {
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-block;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 要約ボタン */
+.btn-summarize {
+  background: #2c5aa0;
+  color: #ffffff;
+  margin-top: 15px;
+}
+
+.btn-summarize:hover:not(:disabled) {
+  background: #234a85;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3);
+}
+
+.btn-summarize:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* 送信ボタン */
+.btn-submit {
+  background: #28a745;
+  color: #ffffff;
+  width: 100%;
+  font-size: 18px;
+  padding: 16px;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* ステータスメッセージ */
+.status-message {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  display: none;
+}
+
+.status-message.show {
+  display: block;
+}
+
+.status-message.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.status-message.loading {
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+/* デバッグ情報 */
+.debug-info {
+  margin-top: 30px;
+  padding: 15px;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.debug-info h4 {
+  margin-top: 0;
+  color: #6c757d;
+}
+
+.debug-info pre {
+  background: #ffffff;
+  padding: 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 12px;
+  overflow-x: auto;
+  max-height: 300px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  #custom-survey-form {
+    padding: 20px;
+    margin: 20px 10px;
+  }
+
+  #custom-survey-form h2 {
+    font-size: 20px;
+  }
+
+  .form-section h3 {
+    font-size: 18px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+</style>
+
+<script>
+// ========================================
+// カスタムアンケートフォーム - JavaScript
+// エラーハンドリング強化版
+// ========================================
+
+(function() {
+  'use strict';
+
+  // ========================================
+  // 設定値（★ここを変更★）
+  // ========================================
+  const CONFIG = {
+    // GAS WebアプリのURL（デプロイしたURLに変更してください）
+    GAS_URL: 'https://script.google.com/macros/s/AKfycbxq39vHX7HPT5gSrJmoBbM_4H8AxA3CT-ya76UyEwPugHlvGSLYQX6I_d4ha8EXAZ13SQ/exec',
+
+    // セキュリティトークン
+    AUTH_TOKEN: 'survey2024_secure_token_Gr0wUp_xyz789',
+
+    // デバッグモード（本番環境では false に設定）
+    DEBUG_MODE: false,
+
+    // タイムアウト時間（ミリ秒）
+    TIMEOUT: 30000
+  };
+
+  // ========================================
+  // DOM要素の取得
+  // ========================================
+  const form = document.getElementById('surveyForm');
+  const summarizeBtn = document.getElementById('summarizeBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const summaryTextarea = document.getElementById('summary');
+  const summaryStatus = document.getElementById('summaryStatus');
+  const submitStatus = document.getElementById('submitStatus');
+  const debugInfo = document.getElementById('debugInfo');
+  const debugLog = document.getElementById('debugLog');
+
+  // 処理中フラグ
+  let isProcessing = false;
+
+  // デバッグモードの初期化
+  if (CONFIG.DEBUG_MODE && debugInfo) {
+    debugInfo.style.display = 'block';
+  }
+
+  // ========================================
+  // ユーティリティ関数
+  // ========================================
+
+  /**
+   * デバッグログを出力
+   */
+  function debug(message, data) {
+    const timestamp = new Date().toISOString();
+    const logMessage = `[${timestamp}] ${message}`;
+
+    console.log(logMessage, data || '');
+
+    if (CONFIG.DEBUG_MODE && debugLog) {
+      const logEntry = data
+        ? `${logMessage}\n${JSON.stringify(data, null, 2)}\n\n`
+        : `${logMessage}\n\n`;
+      debugLog.textContent += logEntry;
+    }
+  }
+
+  /**
+   * ステータスメッセージを表示
+   */
+  function showStatus(element, message, type) {
+    element.textContent = message;
+    element.className = 'status-message show ' + type;
+    debug('ステータス表示', { message, type });
+  }
+
+  /**
+   * ステータスメッセージを非表示
+   */
+  function hideStatus(element) {
+    element.className = 'status-message';
+  }
+
+  /**
+   * 質問①～⑦の回答を取得
+   */
+  function getAnswers() {
+    return {
+      q1: document.getElementById('q1').value.trim(),
+      q2: document.getElementById('q2').value.trim(),
+      q3: document.getElementById('q3').value.trim(),
+      q4: document.getElementById('q4').value.trim(),
+      q5: document.getElementById('q5').value.trim(),
+      q6: document.getElementById('q6').value.trim(),
+      q7: document.getElementById('q7').value.trim()
+    };
+  }
+
+  /**
+   * 全フォームデータを取得
+   */
+  function getAllFormData() {
+    return {
+      facility: document.getElementById('facility').value.trim(),
+      position: document.getElementById('position').value.trim(),
+      name: document.getElementById('name').value.trim(),
+      q1: document.getElementById('q1').value.trim(),
+      q2: document.getElementById('q2').value.trim(),
+      q3: document.getElementById('q3').value.trim(),
+      q4: document.getElementById('q4').value.trim(),
+      q5: document.getElementById('q5').value.trim(),
+      q6: document.getElementById('q6').value.trim(),
+      q7: document.getElementById('q7').value.trim(),
+      q8: document.getElementById('q8').value,
+      q9: document.getElementById('q9').value.trim(),
+      q10: document.getElementById('q10').value.trim(),
+      summary: summaryTextarea.value.trim()
+    };
+  }
+
+  /**
+   * タイムアウト付きfetch
+   */
+  async function fetchWithTimeout(url, options, timeout) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('リクエストがタイムアウトしました。もう一度お試しください。');
+      }
+      throw error;
+    }
+  }
+
+  // ========================================
+  // 要約機能
+  // ========================================
+
+  async function handleSummarize() {
+    if (isProcessing) {
+      debug('要約処理中のため、リクエストをスキップ');
+      return;
+    }
+
+    const answers = getAnswers();
+    debug('要約リクエスト開始', { answers });
+
+    // 入力チェック
+    const hasAnyAnswer = Object.values(answers).some(answer => answer.length > 0);
+    if (!hasAnyAnswer) {
+      showStatus(summaryStatus, '質問①～⑦の少なくとも1つにご回答ください。', 'error');
+      return;
+    }
+
+    // 処理開始
+    isProcessing = true;
+    summarizeBtn.disabled = true;
+    submitBtn.disabled = true;
+    showStatus(summaryStatus, '要約を生成しています... 最大30秒ほどお待ちください。', 'loading');
+
+    try {
+      debug('GASへリクエスト送信', {
+        url: CONFIG.GAS_URL,
+        action: 'summarize'
+      });
+
+      const requestBody = {
+        token: CONFIG.AUTH_TOKEN,
+        action: 'summarize',
+        answers: answers
+      };
+
+      const response = await fetchWithTimeout(
+        CONFIG.GAS_URL,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        },
+        CONFIG.TIMEOUT
+      );
+
+      debug('レスポンス受信', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok
+      });
+
+      if (!response.ok) {
+        throw new Error(`サーバーエラー (HTTP ${response.status}): ${response.statusText}`);
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const textResponse = await response.text();
+        debug('JSONではないレスポンス', { contentType, textResponse });
+        throw new Error('サーバーから不正なレスポンスが返されました。GASのデプロイ設定を確認してください。');
+      }
+
+      const result = await response.json();
+      debug('JSONパース成功', { result });
+
+      if (result.success) {
+        summaryTextarea.value = result.summary;
+        showStatus(summaryStatus, '✓ 要約が完成しました。内容を確認・編集してください。', 'success');
+        summaryTextarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        throw new Error(result.error || '要約の生成に失敗しました');
+      }
+
+    } catch (error) {
+      debug('要約エラー', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+
+      let errorMessage = 'エラー: ' + error.message;
+
+      // エラーの種類に応じた詳細メッセージ
+      if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+        errorMessage += '\n\n【考えられる原因】\n';
+        errorMessage += '1. GASのデプロイ設定が「アクセスできるユーザー: 全員」になっていない\n';
+        errorMessage += '2. GASのURLが正しくない\n';
+        errorMessage += '3. ネットワーク接続の問題\n';
+        errorMessage += '4. CORSの問題（ブラウザのコンソールを確認してください）';
+      }
+
+      showStatus(summaryStatus, errorMessage, 'error');
+
+    } finally {
+      isProcessing = false;
+      summarizeBtn.disabled = false;
+      submitBtn.disabled = false;
+    }
+  }
+
+  // ========================================
+  // 送信機能
+  // ========================================
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    if (isProcessing) {
+      debug('送信処理中のため、リクエストをスキップ');
+      return;
+    }
+
+    const formData = getAllFormData();
+    debug('送信リクエスト開始', { formData });
+
+    // 入力チェック
+    if (!formData.summary) {
+      showStatus(submitStatus, '要約が生成されていません。「要約する」ボタンを押してください。', 'error');
+      summaryTextarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // 確認ダイアログ
+    if (!confirm('アンケートを送信してもよろしいですか？\n\n送信後は内容を変更できません。')) {
+      debug('送信キャンセル');
+      return;
+    }
+
+    // 処理開始
+    isProcessing = true;
+    submitBtn.disabled = true;
+    summarizeBtn.disabled = true;
+    showStatus(submitStatus, '送信しています... お待ちください。', 'loading');
+
+    try {
+      debug('GASへリクエスト送信', {
+        url: CONFIG.GAS_URL,
+        action: 'submit'
+      });
+
+      const requestBody = {
+        token: CONFIG.AUTH_TOKEN,
+        action: 'submit',
+        data: formData
+      };
+
+      const response = await fetchWithTimeout(
+        CONFIG.GAS_URL,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        },
+        CONFIG.TIMEOUT
+      );
+
+      debug('レスポンス受信', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok
+      });
+
+      if (!response.ok) {
+        throw new Error(`サーバーエラー (HTTP ${response.status}): ${response.statusText}`);
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const textResponse = await response.text();
+        debug('JSONではないレスポンス', { contentType, textResponse });
+        throw new Error('サーバーから不正なレスポンスが返されました。');
+      }
+
+      const result = await response.json();
+      debug('JSONパース成功', { result });
+
+      if (result.success) {
+        showStatus(submitStatus, '✓ ' + (result.message || 'アンケートを送信しました。ご協力ありがとうございました！'), 'success');
+
+        // 3秒後にフォームをリセット
+        setTimeout(() => {
+          form.reset();
+          summaryTextarea.value = '';
+          hideStatus(summaryStatus);
+          hideStatus(submitStatus);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+          isProcessing = false;
+          submitBtn.disabled = false;
+          summarizeBtn.disabled = false;
+        }, 3000);
+
+      } else {
+        throw new Error(result.error || '送信に失敗しました');
+      }
+
+    } catch (error) {
+      debug('送信エラー', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+
+      let errorMessage = 'エラー: ' + error.message;
+
+      if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+        errorMessage += '\n\nネットワーク接続またはサーバー設定を確認してください。';
+      }
+
+      showStatus(submitStatus, errorMessage, 'error');
+
+      isProcessing = false;
+      submitBtn.disabled = false;
+      summarizeBtn.disabled = false;
+    }
+  }
+
+  // ========================================
+  // イベントリスナー登録
+  // ========================================
+
+  if (summarizeBtn) {
+    summarizeBtn.addEventListener('click', handleSummarize);
+    debug('要約ボタンのイベントリスナー登録完了');
+  }
+
+  if (form) {
+    form.addEventListener('submit', handleSubmit);
+    debug('フォームのイベントリスナー登録完了');
+  }
+
+  // ========================================
+  // 初期化完了
+  // ========================================
+
+  debug('カスタムアンケートフォーム: 初期化完了', {
+    gasUrl: CONFIG.GAS_URL,
+    debugMode: CONFIG.DEBUG_MODE,
+    timeout: CONFIG.TIMEOUT
+  });
+
+  console.log('%c✓ カスタムアンケートフォーム: 初期化完了', 'color: #28a745; font-weight: bold;');
+  console.log('デバッグモード:', CONFIG.DEBUG_MODE);
+
+})();
+</script>
